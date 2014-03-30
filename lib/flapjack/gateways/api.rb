@@ -8,13 +8,12 @@
 
 require 'time'
 
-require 'rack/fiber_pool'
 require 'sinatra/base'
+require 'rack/fiber_pool'
+require 'rack/json_params_parser'
 
 require 'flapjack/rack_logger'
 require 'flapjack/redis_pool'
-
-require 'flapjack/gateways/api/rack/json_params_parser'
 
 require 'flapjack/gateways/api/contact_methods'
 require 'flapjack/gateways/api/entity_methods'
