@@ -50,12 +50,15 @@ module Flapjack
           EM::Synchrony.sleep(10)
         end
 
-        # TODO: only clear this if there isn't another pagerduty gateway instance running
-        # or better, include an instance ID in the semaphore key name
-        @redis.del(SEM_PAGERDUTY_ACKS_RUNNING)
+        polling = [1, '1', 'yes', '', nil].include?(@config['acknowledgement_polling'])
 
-        acknowledgement_timer = EM::Synchrony.add_periodic_timer(10) do
-          find_pagerduty_acknowledgements_if_safe
+        if polling
+          # TODO: only clear this if there isn't another pagerduty gateway instance running
+          # or better, include an instance ID in the semaphore key name
+          @redis.del(SEM_PAGERDUTY_ACKS_RUNNING)
+          acknowledgement_timer = EM::Synchrony.add_periodic_timer(10) do
+            find_pagerduty_acknowledgements_if_safe
+          end
         end
 
         queue = @config['queue']
@@ -124,7 +127,9 @@ module Flapjack
           end
         end
 
-        acknowledgement_timer.cancel
+        if polling
+          acknowledgement_timer.cancel
+        end
       end
 
       # considering this as part of the public API -- exposes it for testing.
