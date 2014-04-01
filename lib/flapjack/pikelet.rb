@@ -24,6 +24,7 @@ require 'flapjack/gateways/jsonapi'
 require 'flapjack/gateways/jabber'
 require 'flapjack/gateways/oobetet'
 require 'flapjack/gateways/pagerduty'
+require 'flapjack/gateways/pagerduty_webhooks'
 require 'flapjack/gateways/email'
 require 'flapjack/gateways/sms_messagenet'
 require 'flapjack/gateways/web'
@@ -217,9 +218,12 @@ module Flapjack
 
     class Thin < Flapjack::Pikelet::Base
 
-      PIKELET_TYPES = {'web'     => Flapjack::Gateways::Web,
-                       'api'     => Flapjack::Gateways::API,
-                       'jsonapi' => Flapjack::Gateways::JSONAPI}
+      PIKELET_TYPES = {
+        'web'                => Flapjack::Gateways::Web,
+        'api'                => Flapjack::Gateways::API,
+        'jsonapi'            => Flapjack::Gateways::JSONAPI,
+        'pagerduty_webhooks' => Flapjack::Gateways::PagerdutyWebhooks,
+      }
 
       def self.create(type, opts = {})
         ::Thin::Logging.silent = true
